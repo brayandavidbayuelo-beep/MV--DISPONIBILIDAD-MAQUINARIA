@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Disponibilidad de Máquinas · Mundo Vending</title>
+<meta name="description" content="Reporte de novedades y disponibilidad de máquinas de Mundo Vending">
+<meta name="theme-color" content="#00a0d2">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MV Novedades">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ Ingreso ============ -->
+<section id="login" class="login" hidden>
+  <div class="lcard">
+    <img class="logo lt" src="logo.png" alt="Mundo Vending"><img class="logo dk" src="logo_dark.png" alt="Mundo Vending">
+    <h1>Disponibilidad de máquinas</h1>
+    <p class="mut">Ingresa con tu nombre y tu PIN</p>
+    <label>Nombre<select id="lName"><option value="">Cargando…</option></select></label>
+    <label>PIN<input id="lPin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="10" placeholder="••••"></label>
+    <button class="pri" id="lGo">Entrar</button>
+    <p class="err" id="lErr"></p>
+    <div class="lfoot"><button id="lInstall" class="ib" hidden>Instalar app</button></div>
+  </div>
+</section>
+
+<!-- ============ App ============ -->
+<div id="app" hidden>
+  <header>
+    <div class="hw">
+      <div class="brand"><img class="logo lt" src="logo.png" alt="Mundo Vending"><img class="logo dk" src="logo_dark.png" alt="Mundo Vending"><span class="sep"></span><h1>Disponibilidad<small>Control de novedades · Operaciones</small></h1></div>
+      <nav class="top" id="navTop"></nav>
+      <div class="hact" id="hact">
+        <button id="bInstall" class="ib" hidden title="Instalar app">Instalar</button>
+        <button id="bBell" class="ib" hidden title="Activar alertas"></button>
+        <div class="uchip"><b id="uName"></b><span id="uRole"></span></div>
+        <button id="bOut" class="ib" title="Salir"></button>
+      </div>
+    </div>
+    <div class="net" id="net">Sin conexión. Mostrando la última información guardada.</div>
+  </header>
+
+  <main>
+    <div id="msg"></div>
+    <div class="bar" id="filters" hidden>
+      <select id="per" aria-label="Periodo">
+        <option value="m0">Este mes</option><option value="m1">Mes anterior</option>
+        <option value="d7">Últimos 7 días</option><option value="d30">Últimos 30 días</option><option value="d90">Últimos 90 días</option>
+      </select>
+      <select id="fRoute" aria-label="Ruta"><option value="">Todas las rutas</option></select>
+      <span class="sp"></span>
+      <button id="bNew" class="pri ib"></button>
+    </div>
+
+    <section id="v-tablero" hidden>
+      <div class="hero" id="hero"></div>
+      <div class="grid kpis" id="kpis"></div>
+      <div class="card wide"><h2>Disponibilidad día a día</h2>
+        <p class="note" style="margin:-4px 0 8px"><span class="lg" style="display:inline-flex;margin:0 12px 0 0"><i style="background:var(--ok)"></i>≥ 98 %</span><span class="lg" style="display:inline-flex;margin:0 12px 0 0"><i style="background:var(--warn)"></i>95–98 %</span><span class="lg" style="display:inline-flex;margin:0 12px 0 0"><i style="background:var(--bad)"></i>&lt; 95 %</span>Línea punteada: meta 98 %.</p>
+        <div id="trend"></div></div>
+      <div class="grid two">
+        <div class="card"><h2>¿Por qué no estuvieron disponibles?</h2><p class="note" style="margin:-4px 0 8px">Horas fuera de servicio por causa</p><div id="byCat"></div></div>
+        <div class="card"><h2>Disponibilidad por ruta</h2><p class="note" style="margin:-4px 0 8px">De la más baja a la más alta</p><div id="byRoute"></div></div>
+      </div>
+      <div class="grid two">
+        <div class="card"><h2>Máquinas con más tiempo fuera de servicio</h2><div id="topDown"></div></div>
+        <div class="card"><h2>Servicios abiertos por técnico</h2><div id="byTech"></div></div>
+      </div>
+      <div class="grid two">
+        <div class="card"><h2>Reportes por operador</h2><p class="note" style="margin:-4px 0 8px">Novedades reportadas en el periodo</p><div id="byOp"></div></div>
+        <div class="card"><h2>Últimos reportes</h2><div id="lastRep"></div></div>
+      </div>
+    </section>
+
+    <section id="v-priorizar" hidden>
+      <div class="card" style="margin-bottom:12px"><h2>Reportes por priorizar</h2>
+        <p class="note" style="margin:0 0 10px">Reportes que aún no tienen técnico. Primero aparecen las máquinas fuera de servicio, de la más antigua a la más reciente.</p>
+        <div class="tw"><table><thead><tr><th>Reportada hace</th><th>Máquina</th><th>Causa · impacto</th><th class="wrap">Novedad</th><th>Evidencia</th><th class="num">Reincidencia 30 d</th><th>Prioridad</th><th>Técnico</th><th>Programada para</th><th></th></tr></thead><tbody id="tPri"></tbody></table></div>
+      </div>
+      <div class="card"><h2>En atención (asignadas)</h2>
+        <div class="tw"><table><thead><tr><th>Prioridad</th><th>Técnico</th><th>Programada para</th><th>Máquina</th><th>Causa</th><th class="num">Tiempo fuera</th><th class="num">Esperó asignación</th></tr></thead><tbody id="tAsg"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="v-novedades" hidden>
+      <div class="bar">
+        <select id="fSt"><option value="">Todos los estados</option><option value="Abierta">Reportada (por priorizar)</option><option>En atención</option><option>Cerrada</option></select>
+        <select id="fCat"><option value="">Todas las causas</option></select>
+        <input id="fQ" placeholder="Buscar máquina, técnico, operador o texto" style="flex:1;min-width:180px">
+        <button id="bExp">Exportar a Excel (CSV)</button>
+      </div>
+      <div class="tw"><table><thead><tr><th>Estado</th><th>Máquina</th><th>Ruta</th><th>Causa</th><th>Impacto</th><th>Inicio</th><th class="num">Tiempo fuera</th><th>Reportó</th><th>Técnico asignado</th></tr></thead><tbody id="tInc"></tbody></table></div>
+      <p class="note">Las novedades se muestran según el periodo elegido (las abiertas siempre aparecen).</p>
+    </section>
+
+    <section id="v-maquinas" hidden>
+      <div class="bar">
+        <select id="fType"><option value="">Todos los tipos</option></select>
+        <select id="fState"><option value="">Todos los estados</option><option value="down">Fuera de servicio</option><option value="deg">Opera con falla</option><option value="ok">Operativa</option><option value="nocom">Sin comunicación &gt;24 h</option></select>
+        <input id="fMq" placeholder="Buscar máquina o ubicación" style="flex:1;min-width:180px">
+        <button id="bImp" hidden>Actualizar máquinas (CSV Parlevel)</button>
+        <input type="file" id="fileImp" accept=".csv,text/csv" hidden>
+      </div>
+      <div class="tw"><table><thead><tr id="mh"></tr></thead><tbody id="tMq"></tbody></table></div>
+      <p class="note" id="mNote"></p>
+    </section>
+
+    <section id="v-reportar" hidden></section>
+    <section id="v-mis" hidden></section>
+    <section id="v-servicios" hidden></section>
+  </main>
+
+  <nav class="bot" id="navBot"></nav>
+</div>
+
+<dialog id="dlg"><div class="dh"><div><h2 id="dT" style="margin:0"></h2><div class="mut" id="dS" style="font-size:12px"></div></div><button id="dX" class="ib" aria-label="Cerrar">✕</button></div><div class="db" id="dB"></div></dialog>
+
+<!-- ============ Cámara ============ -->
+<div id="cam" class="cam" hidden>
+  <video id="camV" class="live" playsinline muted autoplay></video>
+  <div class="camtop"><button id="camX" aria-label="Cerrar">✕</button><span id="camT" class="camT"></span><button id="camFlip" aria-label="Cambiar cámara"></button></div>
+  <div class="camhint" id="camHint"></div>
+  <div class="cambot"><span style="width:44px"></span><button id="camShot" class="shot" aria-label="Capturar"></button><span style="width:44px"></span></div>
+  <div class="camprev" id="camPrev" hidden><div class="media" id="camMedia"></div><div class="pa"><button id="camRetry">Repetir</button><button id="camUse" class="pri">Usar</button></div></div>
+</div>
+<input type="file" id="camFallback" hidden>
+<canvas id="camCv" hidden></canvas>
+
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

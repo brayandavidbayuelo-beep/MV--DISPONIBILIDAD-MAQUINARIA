@@ -1,0 +1,21 @@
+{
+  "name": "Disponibilidad de Máquinas · Mundo Vending",
+  "short_name": "MV Novedades",
+  "description": "Reporte de novedades con foto o video, priorización de servicios y disponibilidad de máquinas de Mundo Vending.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "es-CO",
+  "background_color": "#ffffff",
+  "theme_color": "#00a0d2",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Reportar novedad", "short_name": "Reportar", "url": "./#reportar", "icons": [{ "src": "icons/shortcut-report.png", "sizes": "96x96" }] }
+  ]
+}
